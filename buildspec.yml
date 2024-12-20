@@ -1,0 +1,32 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+    commands:
+      - echo Installing dependencies...
+      - npm install
+
+  build:
+    commands:
+      - echo Building the application...
+      - npm run build  # Replace with your build command if different
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - ls -al
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes
+
+cache:
+  paths:
+    - node_modules/**/*  # Cache dependencies to speed up future builds
+
+post_build:
+  commands:
+    - aws s3 cp ./build/ s3://aws-pipeline-9381/latest/ --recursive
